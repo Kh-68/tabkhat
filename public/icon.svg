@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FAF7F2" />
+      <stop offset="100%" stop-color="#EFE9DE" />
+    </linearGradient>
+    <linearGradient id="sageGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5E8668" />
+      <stop offset="100%" stop-color="#41634B" />
+    </linearGradient>
+    <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F27A52" />
+      <stop offset="100%" stop-color="#D9582A" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#41634B" flood-opacity="0.18" />
+    </filter>
+  </defs>
+
+  <!-- Background rounded squircle -->
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)" />
+  
+  <!-- Outer subtle ring -->
+  <circle cx="256" cy="256" r="210" fill="none" stroke="#E5DDD0" stroke-width="3" stroke-dasharray="12 8" />
+
+  <!-- Main Cooking Pot / Cocotte Body -->
+  <g filter="url(#shadow)">
+    <!-- Pot Body -->
+    <path d="M140 250 C140 345 190 385 256 385 C322 385 372 345 372 250 Z" fill="url(#sageGrad)" />
+    
+    <!-- Pot Rim -->
+    <rect x="130" y="240" width="252" height="24" rx="12" fill="#4B7255" />
+    
+    <!-- Left Handle -->
+    <path d="M130 262 C104 262 96 280 96 292 C96 304 104 312 130 312" fill="none" stroke="#4B7255" stroke-width="14" stroke-linecap="round" />
+    
+    <!-- Right Handle -->
+    <path d="M382 262 C408 262 416 280 416 292 C416 304 408 312 382 312" fill="none" stroke="#4B7255" stroke-width="14" stroke-linecap="round" />
+    
+    <!-- Pot Lid -->
+    <path d="M152 238 C160 190 210 178 256 178 C302 178 352 190 360 238 Z" fill="url(#sageGrad)" opacity="0.95" />
+    
+    <!-- Lid Knob (Warm Terracotta Accent) -->
+    <ellipse cx="256" cy="172" rx="28" ry="14" fill="url(#orangeGrad)" />
+    <rect x="250" y="172" width="12" height="8" fill="#B84218" />
+  </g>
+
+  <!-- Warm Culinary Steam (Hearts / Leaf herbs) -->
+  <path d="M220 145 C210 120 226 95 212 75" fill="none" stroke="url(#orangeGrad)" stroke-width="7" stroke-linecap="round" opacity="0.85" />
+  <path d="M256 138 C256 110 270 95 256 70" fill="none" stroke="url(#orangeGrad)" stroke-width="8" stroke-linecap="round" />
+  <path d="M292 145 C302 120 286 95 300 75" fill="none" stroke="url(#orangeGrad)" stroke-width="7" stroke-linecap="round" opacity="0.85" />
+
+  <!-- Little herb leaf sprig on pot -->
+  <path d="M256 300 C270 285 295 285 295 305 C275 305 265 315 256 300 Z" fill="#9FC6A6" />
+  <path d="M256 300 C242 285 217 285 217 305 C237 305 247 315 256 300 Z" fill="#8BB593" />
+  <circle cx="256" cy="300" r="4" fill="#FFE2D6" />
+
+  <!-- Subtle Arabic Calligraphy Flourish or Spoon/Fork Accent -->
+  <circle cx="340" cy="350" r="8" fill="#F27A52" />
+  <circle cx="172" cy="350" r="8" fill="#F27A52" />
+</svg>

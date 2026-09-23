@@ -1,0 +1,6 @@
+{
+  "name": "طبخات - وصفات وجدول الطبخ والمشتريات",
+  "description": "تطبيق طبخ عصري للأجهزة المحمولة مع وصفات شهية، اقتراحات ذكية، جدول طبخ أسبوعي، وقائمة مشتريات تلقائية.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
