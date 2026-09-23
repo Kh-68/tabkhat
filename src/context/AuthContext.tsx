@@ -1,7 +1,17 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { doc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
-import { auth, db, loginWithGoogle, logoutUser, handleFirestoreError, OperationType } from '../firebase';
+import { 
+  auth, 
+  db, 
+  loginWithGoogle, 
+  loginWithEmailPassword, 
+  registerWithEmailPassword, 
+  sendResetPassword, 
+  logoutUser, 
+  handleFirestoreError, 
+  OperationType 
+} from '../firebase';
 
 export interface UserAccountData {
   uid: string;
@@ -15,7 +25,10 @@ interface AuthContextType {
   currentUser: User | null;
   userData: UserAccountData | null;
   loading: boolean;
-  login: () => Promise<User>;
+  loginGoogle: () => Promise<User>;
+  loginEmail: (email: string, pass: string) => Promise<User>;
+  registerEmail: (email: string, pass: string, name: string) => Promise<User>;
+  resetPassword: (email: string) => Promise<void>;
   logout: () => Promise<void>;
   syncFavoritesToCloud: (favorites: string[]) => Promise<void>;
 }
@@ -24,7 +37,10 @@ const AuthContext = createContext<AuthContextType>({
   currentUser: null,
   userData: null,
   loading: true,
-  login: async () => { throw new Error('Not initialized'); },
+  loginGoogle: async () => { throw new Error('Not initialized'); },
+  loginEmail: async () => { throw new Error('Not initialized'); },
+  registerEmail: async () => { throw new Error('Not initialized'); },
+  resetPassword: async () => {},
   logout: async () => {},
   syncFavoritesToCloud: async () => {},
 });
@@ -56,7 +72,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               uid: user.uid,
               displayName: user.displayName || 'طاهٍ مميز',
               email: user.email || '',
-              photoURL: user.photoURL || '',
+              photoURL: user.photoURL || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.uid}`,
               favoriteRecipeIds: [],
               createdAt: new Date().toISOString(),
               updatedAt: new Date().toISOString()
@@ -99,7 +115,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         currentUser,
         userData,
         loading,
-        login: loginWithGoogle,
+        loginGoogle: loginWithGoogle,
+        loginEmail: loginWithEmailPassword,
+        registerEmail: registerWithEmailPassword,
+        resetPassword: sendResetPassword,
         logout: logoutUser,
         syncFavoritesToCloud,
       }}
@@ -110,3 +129,4 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 };
 
 export const useAuth = () => useContext(AuthContext);
+

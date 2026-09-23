@@ -3,6 +3,10 @@ import {
   getAuth, 
   signInWithPopup, 
   GoogleAuthProvider, 
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  updateProfile,
   signOut as fbSignOut, 
   onAuthStateChanged,
   User 
@@ -93,13 +97,55 @@ export async function loginWithGoogle() {
   try {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
-    // Sync or create user profile in Firestore
     if (user) {
       await syncUserProfile(user);
     }
     return user;
   } catch (error) {
-    console.error('Login error:', error);
+    console.error('Google login error:', error);
+    throw error;
+  }
+}
+
+// Sign In with Email & Password
+export async function loginWithEmailPassword(email: string, pass: string) {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email.trim(), pass);
+    const user = userCredential.user;
+    if (user) {
+      await syncUserProfile(user);
+    }
+    return user;
+  } catch (error) {
+    console.error('Email login error:', error);
+    throw error;
+  }
+}
+
+// Sign Up with Email & Password
+export async function registerWithEmailPassword(email: string, pass: string, displayName: string) {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email.trim(), pass);
+    const user = userCredential.user;
+    if (displayName.trim()) {
+      await updateProfile(user, {
+        displayName: displayName.trim()
+      });
+    }
+    await syncUserProfile(user, displayName.trim());
+    return user;
+  } catch (error) {
+    console.error('Email register error:', error);
+    throw error;
+  }
+}
+
+// Send Password Reset Email
+export async function sendResetPassword(email: string) {
+  try {
+    await sendPasswordResetEmail(auth, email.trim());
+  } catch (error) {
+    console.error('Reset password error:', error);
     throw error;
   }
 }
@@ -115,24 +161,25 @@ export async function logoutUser() {
 }
 
 // Sync User Profile in Firestore
-export async function syncUserProfile(user: User) {
+export async function syncUserProfile(user: User, customName?: string) {
   const userRef = doc(db, 'users', user.uid);
   try {
     const snap = await getDoc(userRef);
+    const finalName = customName || user.displayName || 'طاهٍ مميز';
     if (!snap.exists()) {
       await setDoc(userRef, {
         uid: user.uid,
-        displayName: user.displayName || 'طاهٍ مميز',
+        displayName: finalName,
         email: user.email || '',
-        photoURL: user.photoURL || '',
+        photoURL: user.photoURL || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.uid}`,
         favoriteRecipeIds: [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       });
     } else {
       await updateDoc(userRef, {
-        displayName: user.displayName || snap.data()?.displayName || 'طاهٍ مميز',
-        photoURL: user.photoURL || snap.data()?.photoURL || '',
+        displayName: user.displayName || finalName,
+        photoURL: user.photoURL || snap.data()?.photoURL || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.uid}`,
         updatedAt: new Date().toISOString()
       });
     }
