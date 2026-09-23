@@ -150,6 +150,49 @@ app.post('/api/parse-recipe-voice', async (req, res) => {
   }
 });
 
+// Direct Project Zip Download route
+app.get('/api/download-zip', (req, res) => {
+  const zipPath = path.resolve(__dirname, 'public/tabkhat-project.zip');
+  if (fs.existsSync(zipPath)) {
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', 'attachment; filename="tabkhat-project.zip"');
+    return fs.createReadStream(zipPath).pipe(res);
+  }
+  return res.status(404).send('Archive not found');
+});
+
+// Direct GitHub Push API route (optional if user prefers web action)
+app.post('/api/github-push', async (req, res) => {
+  const { token, repoName = 'tabkhat' } = req.body;
+  if (!token) {
+    return res.status(400).json({ success: false, error: 'Token is required' });
+  }
+  try {
+    const { exec } = await import('child_process');
+    const { promisify } = await import('util');
+    const execAsync = promisify(exec);
+
+    const cleanToken = token.trim();
+    const remoteUrl = `https://${cleanToken}@github.com/Kh-68/${repoName}.git`;
+
+    await execAsync('git config user.name "Kh-68" && git config user.email "play1112025@gmail.com"');
+    await execAsync('git add .');
+    try {
+      await execAsync('git commit -m "update: تطبيق طبخات"');
+    } catch (e) {
+      // Nothing to commit is fine
+    }
+    await execAsync(`git remote remove origin || true`);
+    await execAsync(`git remote add origin ${remoteUrl}`);
+    await execAsync(`git branch -M main`);
+    await execAsync(`git push -u origin main --force`);
+
+    return res.json({ success: true, message: 'تم رفع المشروع بنجاح إلى GitHub!' });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, error: err.message || 'فشل الرفع إلى GitHub' });
+  }
+});
+
 // Vite middleware or static dist serving
 async function startServer() {
   const port = Number(PORT) || 3000;
