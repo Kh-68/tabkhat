@@ -236,10 +236,6 @@ export default function App() {
             onDeleteRecipe={handleDeleteRecipe}
             onSelectRecipe={(r) => setSelectedRecipe(r)}
             onOpenAddRecipe={() => setIsAddModalOpen(true)}
-            onOpenInstallGuide={() => {
-              // Trigger iOS / PWA modal via home view or direct event
-              window.dispatchEvent(new CustomEvent('open-pwa-guide'));
-            }}
           />
         )}
       </main>

@@ -1,5 +1,4 @@
 import React from 'react';
-import { PWAInstallButton } from './PWAInstallButton';
 import { ShoppingCart } from 'lucide-react';
 import { UserProfile } from '../types';
 import { useAuth } from '../context/AuthContext';
@@ -42,11 +41,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
           </div>
         </div>
 
-        {/* Right Action Icons & PWA Install */}
+        {/* Right Action Icons */}
         <div className="flex items-center gap-2">
-          {/* PWA Install Button in Header */}
-          <PWAInstallButton variant="header" />
-
           {/* Quick Shopping Cart with Counter */}
           <button
             onClick={() => onNavigateTab('shopping')}

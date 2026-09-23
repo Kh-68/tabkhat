@@ -36,7 +36,7 @@ interface ProfileViewProps {
   onDeleteRecipe: (id: string) => void;
   onSelectRecipe: (recipe: Recipe) => void;
   onOpenAddRecipe: () => void;
-  onOpenInstallGuide: () => void;
+  onOpenInstallGuide?: () => void;
 }
 
 export const ProfileView: React.FC<ProfileViewProps> = ({
@@ -48,7 +48,6 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   onDeleteRecipe,
   onSelectRecipe,
   onOpenAddRecipe,
-  onOpenInstallGuide,
 }) => {
   const { currentUser, userData, loginGoogle, logout, loading } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
@@ -441,17 +440,6 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       {/* App & Device Settings */}
       <div className="p-4 rounded-3xl bg-white border border-[#EDE7DD] space-y-3">
         <h4 className="text-xs font-bold text-[#242A26] mb-2">التطبيق والبيانات</h4>
-
-        <button
-          onClick={onOpenInstallGuide}
-          className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-[#FAF8F5] transition text-right"
-        >
-          <div className="flex items-center gap-2.5 text-xs text-[#242A26] font-semibold">
-            <Smartphone className="w-4 h-4 text-[#4E7659]" />
-            <span>طريقة تثبيت التطبيق على الشاشة الرئيسية (PWA)</span>
-          </div>
-          <span className="text-xs text-[#8E9791]">عرض</span>
-        </button>
 
         <button
           onClick={handleExportData}

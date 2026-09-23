@@ -2,7 +2,6 @@ import React from 'react';
 import { Recipe, RecipeCategory } from '../types';
 import { CATEGORIES } from '../data/categories';
 import { RecipeCard } from './RecipeCard';
-import { PWAInstallButton } from './PWAInstallButton';
 import {
   Search,
   Sparkles,
@@ -61,9 +60,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
           </span>
         </div>
       </div>
-
-      {/* PWA Install Banner */}
-      <PWAInstallButton variant="banner" />
 
       {/* Quick Action Pills (Meal Plan, Shopping, Smart Suggestions, Timer) */}
       <div className="px-4">
