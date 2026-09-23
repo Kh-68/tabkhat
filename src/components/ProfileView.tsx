@@ -10,14 +10,8 @@ import {
   ShoppingCart,
   Plus,
   Trash2,
-  Download,
-  Upload,
-  Sparkles,
-  Smartphone,
   Check,
   Edit2,
-  ShieldCheck,
-  Bell,
   Star,
   LogIn,
   LogOut,
@@ -116,23 +110,6 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
     } else {
       setDietaryPrefs([...dietaryPrefs, tag]);
     }
-  };
-
-  // Export data as JSON
-  const handleExportData = () => {
-    const data = {
-      profile,
-      recipes: userRecipes,
-      exportedAt: new Date().toISOString(),
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `tabkhat_backup_${new Date().toISOString().split('T')[0]}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast('تم تصدير نسخة احتياطية من بياناتك!');
   };
 
   const activeName = currentUser?.displayName || userData?.displayName || profile.name;
@@ -435,98 +412,6 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             ))}
           </div>
         )}
-      </div>
-
-      {/* App & Device Settings */}
-      <div className="p-4 rounded-3xl bg-white border border-[#EDE7DD] space-y-3">
-        <h4 className="text-xs font-bold text-[#242A26] mb-2">التطبيق والبيانات</h4>
-
-        <button
-          onClick={handleExportData}
-          className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-[#FAF8F5] transition text-right"
-        >
-          <div className="flex items-center gap-2.5 text-xs text-[#242A26] font-semibold">
-            <Download className="w-4 h-4 text-[#E26D46]" />
-            <span>تصدير نسخة احتياطية من وصفاتي (JSON)</span>
-          </div>
-          <span className="text-xs text-[#8E9791]">حفظ</span>
-        </button>
-
-        {/* Download complete codebase ZIP */}
-        <a
-          href="/api/download-zip"
-          download="tabkhat-project.zip"
-          className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-[#FAF8F5] transition text-right"
-        >
-          <div className="flex items-center gap-2.5 text-xs text-[#242A26] font-semibold">
-            <Download className="w-4 h-4 text-[#1E6091]" />
-            <span>تحميل كامل كود المشروع (ملف مضغوط ZIP)</span>
-          </div>
-          <span className="text-xs bg-[#1E6091]/10 text-[#1E6091] px-2 py-0.5 rounded-full font-bold">تحميل ZIP</span>
-        </a>
-      </div>
-
-      {/* GitHub Direct Push Panel */}
-      <div className="p-4 rounded-3xl bg-white border border-[#EDE7DD] space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-base">🐙</span>
-            <h4 className="text-xs font-bold text-[#242A26]">رفع ونشر المشروع على GitHub</h4>
-          </div>
-          <span className="text-[10px] text-green-700 bg-green-50 px-2 py-0.5 rounded-full font-medium">مستودع Kh-68/tabkhat</span>
-        </div>
-        <p className="text-[11px] text-[#606963] leading-relaxed">
-          يمكنك رفع وتحديث كامل المشروع في حسابك على GitHub بنقرة واحدة بإدخال رمز الوصول (Personal Access Token):
-        </p>
-        <div className="flex gap-2">
-          <input
-            id="gh-token-input"
-            type="password"
-            placeholder="ألصق الرمز ghp_..."
-            className="flex-1 text-xs px-3 py-2 border border-[#EDE7DD] rounded-xl outline-none focus:border-[#E26D46]"
-          />
-          <button
-            onClick={async () => {
-              const input = document.getElementById('gh-token-input') as HTMLInputElement;
-              const val = input?.value?.trim();
-              if (!val) {
-                alert('يرجى لصق رمز الـ Token أولاً');
-                return;
-              }
-              try {
-                showToast('جاري الرفع إلى GitHub...');
-                const res = await fetch('/api/github-push', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ token: val, repoName: 'tabkhat' }),
-                });
-                const data = await res.json();
-                if (data.success) {
-                  showToast('🎉 تم رفع المشروع بنجاح إلى GitHub!');
-                  alert('تم رفع ونشر المشروع بنجاح إلى github.com/Kh-68/tabkhat !');
-                } else {
-                  alert('فشل الرفع: ' + (data.error || 'تأكد من صحة الرمز'));
-                }
-              } catch (err: any) {
-                alert('حدث خطأ أثناء الرفع: ' + err.message);
-              }
-            }}
-            className="px-4 py-2 bg-[#242A26] text-white rounded-xl text-xs font-bold hover:bg-black transition"
-          >
-            رفع الآن
-          </button>
-        </div>
-      </div>
-
-      {/* Future Features Roadmap (Showing database architectural readiness) */}
-      <div className="p-4 rounded-3xl bg-[#F7F4EE] border border-[#E9E3D6] space-y-2">
-        <div className="flex items-center gap-1.5 text-xs font-bold text-[#242A26]">
-          <Sparkles className="w-3.5 h-3.5 text-[#E26D46]" />
-          <span>بنية البيانات المجهزة للميزات المستقبلية</span>
-        </div>
-        <p className="text-[11px] text-[#606963] leading-relaxed">
-          تم تصميم قاعدة البيانات بهيكلية معيارية قابلة للتوسع تدعم: تقييمات وتعليقات المستخدمين، الفيديوهات القصيرة للطبخ، إشعارات تذكير الوجبات، والمزامنة السحابية المتعددة.
-        </p>
       </div>
 
       {/* Auth Modal (Google & Email/Password Sign in / Sign up) */}
