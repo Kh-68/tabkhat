@@ -1,7 +1,8 @@
 import React from 'react';
 import { PWAInstallButton } from './PWAInstallButton';
-import { Calendar, ShoppingCart, Sparkles } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
 import { UserProfile } from '../types';
+import { useAuth } from '../context/AuthContext';
 
 interface HeaderNavProps {
   currentTab: string;
@@ -16,6 +17,10 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   shoppingCount,
   profile,
 }) => {
+  const { currentUser, userData } = useAuth();
+  const avatarSrc = currentUser?.photoURL || userData?.photoURL || profile.avatar;
+  const userName = currentUser?.displayName || userData?.displayName || profile.name;
+
   return (
     <header className="sticky top-0 z-30 bg-[#FAF8F5]/90 backdrop-blur-md border-b border-[#EDE7DD] safe-top">
       <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
@@ -56,22 +61,26 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             )}
           </button>
 
-          {/* User Profile Avatar */}
+          {/* User Profile Avatar with Login Badge */}
           <button
             onClick={() => onNavigateTab('profile')}
-            className={`w-9 h-9 rounded-full overflow-hidden border-2 transition active:scale-90 ${
+            className={`relative w-9 h-9 rounded-full overflow-hidden border-2 transition active:scale-90 ${
               currentTab === 'profile' ? 'border-[#4E7659]' : 'border-[#EDE7DD]'
             }`}
-            title="الملف الشخصي"
+            title={currentUser ? `حساب: ${userName}` : 'الملف الشخصي وتسجيل الدخول'}
           >
             <img
-              src={profile.avatar}
-              alt={profile.name}
+              src={avatarSrc}
+              alt={userName}
               className="w-full h-full object-cover"
             />
+            {currentUser && (
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-500 border-2 border-white" />
+            )}
           </button>
         </div>
       </div>
     </header>
   );
 };
+

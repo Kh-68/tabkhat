@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Connection testing
+    match /test/{testId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // User Profiles
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) &&
+        incoming().uid == userId &&
+        incoming().displayName is string && incoming().displayName.size() <= 100 &&
+        incoming().email is string && incoming().email.size() <= 150;
+      allow update: if isOwner(userId) &&
+        incoming().uid == userId;
+      allow delete: if isOwner(userId);
+
+      // Subcollection for user shopping items
+      match /shoppingItems/{itemId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // Community Recipes
+    match /recipes/{recipeId} {
+      allow read: if true;
+      allow create: if isSignedIn() &&
+        incoming().authorId == request.auth.uid &&
+        incoming().title is string && incoming().title.size() <= 120 &&
+        incoming().category is string && incoming().category.size() <= 50;
+      allow update: if isSignedIn() &&
+        existing().authorId == request.auth.uid &&
+        incoming().authorId == request.auth.uid;
+      allow delete: if isSignedIn() &&
+        existing().authorId == request.auth.uid;
+    }
+  }
+}
